@@ -64,9 +64,9 @@ void Scan2::scanCallBack(const sensor_msgs::LaserScan::ConstPtr&
 
 
 void Scan2::dynamic_broadcaster(double dx, double dy,double dyaw){
-        transform.setOrigin( tf::Vector3(x_p, y_p, yaw_p) );
+        transform.setOrigin( tf::Vector3(x_p, y_p, 0) );
         tf::Quaternion q;
-        q.setRPY(0, 0, 0);
+        q.setRPY(0, 0, yaw_p);
         transform.setRotation(q);
         br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "robot"));
         x_p += dx;
