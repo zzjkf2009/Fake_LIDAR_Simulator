@@ -1,0 +1,22 @@
+<launch>
+
+<arg name = "laser_offset_x" default = "0.0"/>
+<arg name = "laser_offset_y" default = "0.1"/>
+<arg name = "laser_offset_z" default = "0.05"/>
+<arg name= "x_incremental" default = "0.05"/>
+<arg name= "y_incremental" default = "0.0"/>
+<arg name= "yaw_incremental" default = "0.0"/>
+<arg name="bagfile_1" default="/home/yzy/catkin_ws/src/fake_scanner/bag/GoingStraight.bag" />
+
+<node pkg="tf" type="static_transform_publisher" name="RobotToLIDAR" args="$(arg laser_offset_x) $(arg laser_offset_y) $(arg laser_offset_z) 0 0 0 1 robot laser_frame 100" />
+
+<node pkg = "fake_scanner" type = "fake_scanner" name = "fake_scanner">
+<param name="publish_frequency" type="double" value="10.0" />
+<param name="x_incremental" type="double" value="$(arg x_incremental)" />
+<param name="y_incremental" type="double" value="$(arg y_incremental)" />
+<param name="yaw_incremental" type="double" value="$(arg yaw_incremental)" />
+</node>
+
+<node pkg="rosbag" name="play" type="play" args="--clock $(arg bagfile_1)" />
+
+</launch>
