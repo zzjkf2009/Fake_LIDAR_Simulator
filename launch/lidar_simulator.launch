@@ -1,22 +1,27 @@
 <launch>
+  <!-- Declare arguments and set their default valge -->
+  <param name="/use_sim_time" value="true" />
+  <arg name = "laser_offset_x" default = "0.0"/>
+  <arg name = "laser_offset_y" default = "0.1"/>
+  <arg name = "laser_offset_z" default = "0.05"/>
+  <arg name= "x_incremental" default = "0.05"/>
+  <arg name= "y_incremental" default = "0.0"/>
+  <arg name= "yaw_incremental" default = "0.0"/>
+  <arg name="bagfile" default="$(find fake_scanner)/bag/GoingStraight.bag" />
+  <arg name="init_position" default="0.0 0.0 0.0" />
+  <!-- Create a static transformation between robot and laser_frame -->
+  <node pkg="tf" type="static_transform_publisher" name="RobotToLIDAR" args="$(arg laser_offset_x) $(arg laser_offset_y) $(arg laser_offset_z) 0 0 0 1 robot laser_frame 100" />
 
-<arg name = "laser_offset_x" default = "0.0"/>
-<arg name = "laser_offset_y" default = "0.1"/>
-<arg name = "laser_offset_z" default = "0.05"/>
-<arg name= "x_incremental" default = "0.05"/>
-<arg name= "y_incremental" default = "0.0"/>
-<arg name= "yaw_incremental" default = "0.0"/>
-<arg name="bagfile_1" default="$(find fake_scanner)/bag/GoingStraight.bag" />
+  <!-- Play rosbag data which constains /LaserScan from other resources -->
+  <node pkg="rosbag" name="play" type="play" args="--clock $(arg bagfile)" />
+  <!-- Load fake_scanner node to subscribe the scan data from the bag file and pubulish a new scan data based on our own system -->
+  <node pkg = "fake_scanner" type = "fake_scanner" name = "fake_scanner" args="$(arg init_position)">
+    <param name="publish_frequency" type="double" value="10.0" />
+    <param name="x_incremental" type="double" value="$(arg x_incremental)" />
+    <param name="y_incremental" type="double" value="$(arg y_incremental)" />
+    <param name="yaw_incremental" type="double" value="$(arg yaw_incremental)" />
+  </node>
 
-<node pkg="tf" type="static_transform_publisher" name="RobotToLIDAR" args="$(arg laser_offset_x) $(arg laser_offset_y) $(arg laser_offset_z) 0 0 0 1 robot laser_frame 100" />
-
-<node pkg = "fake_scanner" type = "fake_scanner" name = "fake_scanner">
-<param name="publish_frequency" type="double" value="10.0" />
-<param name="x_incremental" type="double" value="$(arg x_incremental)" />
-<param name="y_incremental" type="double" value="$(arg y_incremental)" />
-<param name="yaw_incremental" type="double" value="$(arg yaw_incremental)" />
-</node>
-
-<node pkg="rosbag" name="play" type="play" args="--clock $(arg bagfile_1)" />
-<node pkg="rviz" name="rviz_visilization" type="rviz" args="-d $(find fake_scanner)/rviz/fake_LIDAR.rviz "/>
+  <!-- Load rviz to display the movement and the scan data, configuration file is in the rviz folder -->
+  <node pkg="rviz" name="rviz_visilization" type="rviz" args="-d $(find fake_scanner)/rviz/fake_LIDAR.rviz "/>
 </launch>

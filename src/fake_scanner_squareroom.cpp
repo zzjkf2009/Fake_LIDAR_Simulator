@@ -1,3 +1,15 @@
+/**
+ * @Author: Zejiang Zeng <yzy>
+ * @Date:   2018-09-27T09:04:18-04:00
+ * @Email:  zzeng@terpmail.umd.edu
+ * @Filename: fake_scanner_squareroom.cpp
+ * @Last modified by:   yzy
+ * @Last modified time: 2018-09-27T09:35:02-04:00
+ * @Copyright: (C) 2017 Zejiang Zeng - All Rights Reserved
+ * You may use, distribute and modify this code under the
+ * terms of the BSD license.
+ */
+
 #include <ros/ros.h>
 #include <sensor_msgs/LaserScan.h>
 #include <tf/transform_broadcaster.h>
@@ -5,7 +17,7 @@
 
 class Scan2 {
 public:
-Scan2();
+Scan2(double init_x,double init_y,double init_yaw);
 private:
 ros::NodeHandle n;
 ros::Publisher scan_pub;
@@ -19,19 +31,19 @@ double yaw_p = 0.0;
 double dx;
 double dy;
 double dyaw;
-bool getx = ros::param::get("~x_incremental", dx);
-bool gety = ros::param::get("~y_incremental", dy);
-bool getyaw = ros::param::get("~yaw_incremental", dyaw);
+bool getdx = ros::param::get("~x_incremental", dx);
+bool getdy = ros::param::get("~y_incremental", dy);
+bool getdyaw = ros::param::get("~yaw_incremental", dyaw);
 void scanCallBack(const sensor_msgs::LaserScan::ConstPtr& scan2);
 void dynamic_broadcaster(double dx, double dy,double dyaw);
 };
 
-Scan2::Scan2()
+Scan2::Scan2(double init_x,double init_y,double init_yaw) : x_p(init_x),y_p(init_y), yaw_p(init_yaw)
 {
         scan_pub = n.advertise<sensor_msgs::LaserScan>("/fake_scan",500);
         scan_sub = n.subscribe<sensor_msgs::LaserScan>("/scan",1,
                                                        &Scan2::scanCallBack, this);
-        if(!getx || !gety || !getyaw) {
+        if(!getdx || !getdy || !getdyaw) {
                 ROS_FATAL_STREAM("Can't get parameters");
         }
         while(n.ok()) {
@@ -76,5 +88,9 @@ void Scan2::dynamic_broadcaster(double dx, double dy,double dyaw){
 
 int main(int argc, char** argv){
         ros::init(argc, argv, "fake_scanner");
-        Scan2 scan2;
+        if(argc != 4) {
+                ROS_ERROR("Invalid number of arguments for: init_x, init_y, init_yaw");
+                //return 1;
+        }
+        Scan2 scan2(atof(argv[1]),atof(argv[2]),atof(argv[3]));
 }
