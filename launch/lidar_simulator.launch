@@ -18,5 +18,5 @@
 </node>
 
 <node pkg="rosbag" name="play" type="play" args="--clock $(arg bagfile_1)" />
-<node pkg="rviz" name="rviz_visilization" type="rviz" args="-d /home/yzy/catkin_ws/src/fake_scanner/rviz/fake_LIDAR.rivz "/>
+<node pkg="rviz" name="rviz_visilization" type="rviz" args="-d /home/yzy/catkin_ws/src/fake_scanner/rviz/fake_LIDAR.rviz "/>
 </launch>
