@@ -18,24 +18,10 @@
 
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
+#include "dynamic_transform.h"
 
-class Dynamic_Transform {
-public:
-Dynamic_Transform(double init_x,double init_y,double init_z,double init_yaw,double x_incremental,double y_incremental,double yaw_incremental);
-private:
-ros::NodeHandle n;
-tf::TransformBroadcaster br;
-tf::Transform transform;
-double x_p;
-double y_p;
-double z_p;
-double yaw_p;
-double dx;
-double dy;
-double dyaw;
-};
 /**
- * [Dynamic_Transform::Dynamic_Transform constructor Dynamically broadcast frame from robot to world by
+ * [Dynamic_Transform::Dynamic_Transform Constructor: Dynamically broadcast frame from robot to world by
  * adding the x_incremental, y_incremental, yaw_incremental values]
 
  */
@@ -54,6 +40,13 @@ Dynamic_Transform::Dynamic_Transform(double init_x,double init_y,double init_z,d
                 ros::spinOnce();
                 ros::Duration(0.1).sleep();
         }
+}
+/**
+ * [Dynamic_Transform::getY_incremental Get the private variable dy]
+ * @return [double]
+ */
+double Dynamic_Transform::getY_incremental() const {
+        return dy;
 }
 
 int main(int argc, char** argv){

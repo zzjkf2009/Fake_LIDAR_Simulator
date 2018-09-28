@@ -13,25 +13,10 @@
  * (sensor_msgs/LaserScan),which basically inherit all the parameters (eg. min/max range, angle_increment,min/max angle etc)
  * from the /scan.
  */
-
-
-
 #include <ros/ros.h>
 #include <sensor_msgs/LaserScan.h>
+#include "fake_scanner_external.h"
 
-/**
- * [Scan2] The class Scan2, that will subscribe /scan (sensor_msgs/LaserScan) and
- * publish a new Laserscan message
- */
-class Scan2 {
-public:
-Scan2();
-private:
-ros::NodeHandle n;
-ros::Publisher scan_pub;
-ros::Subscriber scan_sub;
-void scanCallBack(const sensor_msgs::LaserScan::ConstPtr& scan2);
-};
 /**
  * [Scan2::Scan2 constructor for the Scan2 class]
  */

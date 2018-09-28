@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   tf
 )
+find_package(rostest REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -117,14 +118,14 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include/fake_scanner
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/fake_scanner.cpp
-# )
+#add_library(${PROJECT_NAME}
+#   src/fake_scanner.cpp
+#)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -199,9 +200,13 @@ target_link_libraries(fake_scanner
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_fake_scanner.cpp)
+catkin_add_gtest(dynamic_transform_test test/dynamic_transform_test.cpp)
+ target_link_libraries(dynamic_transform_test ${catkin_LIBRARIES})
+catkin_add_gtest(fake_scanner_test test/fake_scanner_test.cpp)
+ target_link_libraries(fake_scanner_test ${catkin_LIBRARIES})
+
 # if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+#  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
 ## Add folders to be run by python nosetests

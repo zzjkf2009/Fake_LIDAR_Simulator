@@ -17,31 +17,8 @@
 #include <ros/ros.h>
 #include <sensor_msgs/LaserScan.h>
 #include <tf/transform_broadcaster.h>
+#include "fake_scanner.h"
 
-/**
- * [Scan description]
- * @param num_readings [double number of points]
- * @param distance     [double range distance ]
- * @param angle_min    [double minimium angle]
- * @param angle_max    [double maximum angle]
- * @param range_min    [double minimium range]
- * @param range_max    [double maximum range]
- * @param topicName    [string topic name]
- */
-class Scan {
-public:
-Scan(double num_readings, double distance, double angle_min, double angle_max, double range_min, double range_max, std::string topicName);
-private:
-ros::NodeHandle n;
-ros::Publisher scan_pub;
-std::string topicName_;
-double num_readings_;
-double angle_min_;
-double angle_max_;
-double range_min_;
-double range_max_;
-double distance_;
-};
 /**
  * [Scan::Scan constructor Publish made-up LaserScan message]
  */
@@ -68,7 +45,9 @@ Scan::Scan(double num_readings, double distance, double angle_min, double angle_
                 ros::Duration(0.5).sleep();
         }
 }
-
+double Scan::getNum() const {
+        return num_readings_;
+}
 int main(int argc, char** argv){
         ros::init(argc, argv, "laser_scan_publisher");
         if(argc != 8) {
