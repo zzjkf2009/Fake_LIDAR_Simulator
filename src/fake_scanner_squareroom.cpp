@@ -7,7 +7,7 @@
  * @Last modified time: 2018-09-27T09:35:02-04:00
  * @Copyright: (C) 2017 Zejiang Zeng - All Rights Reserved
  * You may use, distribute and modify this code under the
- * terms of the BSD license.
+ * terms of the BSD license.reads the contents of one or more bag file, and plays them back in a time-synchronized fashion.
  */
 
 #include <ros/ros.h>

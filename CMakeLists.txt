@@ -134,9 +134,9 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-
- add_executable(fake_scanner src/fake_scanner_squareroom.cpp)
-# add_executable(dynamic_transform src/dynamic_transform.cpp)
+ add_executable(fake_scanner src/fake_scanner.cpp)
+ add_executable(fake_scanner_external src/fake_scanner_external.cpp)
+ add_executable(dynamic_transform src/dynamic_transform.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -147,15 +147,18 @@ include_directories(
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 
-add_dependencies(fake_scanner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(fake_scanner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-
- target_link_libraries(fake_scanner
-#   dynamic_transform
+target_link_libraries(fake_scanner
+  ${catkin_LIBRARIES}
+)
+ target_link_libraries(fake_scanner_external
    ${catkin_LIBRARIES}
  )
-
+ target_link_libraries(dynamic_transform
+   ${catkin_LIBRARIES}
+ )
 #############
 ## Install ##
 #############
