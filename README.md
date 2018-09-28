@@ -2,7 +2,7 @@
 
 
 ## Overview
-This is the package that simulate the LIDAR data by publishing [laserScan](http://docs.ros.org/melodic/api/sensor_msgs/html/msg/LaserScan.html) message from a dynamic frame relative to world. Three nodes are created, one creates a dynamic transformation, one publishes made-up LaserScan message, one subscribes laserScan message from other resources and publish new LaserScan message. More details about the parameters and arguments can be found in the launch file. Bag files can be created by recording the LaserScan data from the LIDAR on [Turtlebot3](http://emanual.robotis.com/docs/en/platform/turtlebot3/overview/) in Gazebo. By setting the BagMode to be ture of false, it will choose if use the made-up LaserScan data or LaserScan data from bag file.
+This is the package that simulates the LIDAR data by publishing [laserScan](http://docs.ros.org/melodic/api/sensor_msgs/html/msg/LaserScan.html) message. The robot is "moving" by creating a dynamic robot frame relative to world. Three nodes are created, one creates a dynamic transformation, one publishes made-up LaserScan message, one subscribes laserScan message from other resources and publish new LaserScan message.  By setting the BagMode to be true of false, it will choose to use the made-up LaserScan data or LaserScan data from bag file. More details about the parameters and arguments can be found in the launch file. Bag files can be created by recording the LaserScan data from the LIDAR on [Turtlebot3](http://emanual.robotis.com/docs/en/platform/turtlebot3/overview/) in Gazebo.
 
 
 ## Build and Run
@@ -33,7 +33,7 @@ This is the node: dynamic_transform, which will define the relationship between 
 - input arguments : init_x, init_y, init_z, init_yaw
 
 ##### Node: fake_scanner
-This is the node: fake_scanner, which publishes the made-up LaserScan data. The parameters of the data can be set via arguments.
+This is the node: fake_scanner, which publishes the made-up LaserScan data (circle). The parameters of the data can be set via arguments.
 - input arguments : num_readings, distance, angle_min, angle_max, range_min, range_max, topicName
 
 ##### Node: fake_scanner_external
