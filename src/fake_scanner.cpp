@@ -18,38 +18,63 @@
 #include <sensor_msgs/LaserScan.h>
 #include <tf/transform_broadcaster.h>
 
+/**
+ * [Scan description]
+ * @param num_readings [double number of points]
+ * @param distance     [double range distance ]
+ * @param angle_min    [double minimium angle]
+ * @param angle_max    [double maximum angle]
+ * @param range_min    [double minimium range]
+ * @param range_max    [double maximum range]
+ * @param topicName    [string topic name]
+ */
+class Scan {
+public:
+Scan(double num_readings, double distance, double angle_min, double angle_max, double range_min, double range_max, std::string topicName);
+private:
+ros::NodeHandle n;
+ros::Publisher scan_pub;
+std::string topicName_;
+double num_readings_;
+double angle_min_;
+double angle_max_;
+double range_min_;
+double range_max_;
+double distance_;
+};
+/**
+ * [Scan::Scan constructor Publish made-up LaserScan message]
+ */
+Scan::Scan(double num_readings, double distance, double angle_min, double angle_max, double range_min, double range_max, std::string topicName) :
+        num_readings_(num_readings),distance_(distance),angle_min_(angle_min),angle_max_(angle_max),range_min_(range_min),
+        range_max_(range_max),topicName_(topicName){
+        while(n.ok()) {
+                sensor_msgs::LaserScan scan;
+                scan_pub = n.advertise<sensor_msgs::LaserScan>(topicName_,500);
+                scan.header.stamp = ros::Time::now();
+                scan.header.frame_id = "laser_frame";
+                scan.angle_min = angle_min_;
+                scan.angle_max = angle_max_;
+                scan.angle_increment = (angle_max_ - angle_min_) / num_readings_;
+                scan.time_increment = (1 / 60) / (num_readings_);
+                scan.range_min = range_min_;
+                scan.range_max = range_max_;
+                scan.ranges.resize(num_readings_);
+                for(unsigned int i = 0; i < num_readings_; ++i) {
+                        scan.ranges[i] = distance_;
+                }
+                scan_pub.publish(scan);
+                ros::spinOnce();
+                ros::Duration(0.5).sleep();
+        }
+}
+
 int main(int argc, char** argv){
         ros::init(argc, argv, "laser_scan_publisher");
-        ros::NodeHandle n;
         if(argc != 8) {
                 ROS_ERROR("Invalid number of arguments for: num_readings, distance, angle_min, angle_max,range_min,range_max, topicName");
                 return 1;
         }
-        ros::Publisher scan_pub = n.advertise<sensor_msgs::LaserScan>(argv[7], 500);
-        unsigned int num_readings = atof(argv[1]);
-        double laser_frequency = 60;
-        double ranges[num_readings];
-        int distance = atof(argv[2]);
-        ros::Rate r(5.0);
-
-        while(n.ok()) {
-                //generate some fake data for our laser scan
-                ros::Time scan_time = ros::Time::now();
-                sensor_msgs::LaserScan scan;
-                scan.header.stamp = scan_time;
-                scan.header.frame_id = "laser_frame";
-                scan.angle_min = atof(argv[3]);
-                scan.angle_max = atof(argv[4]);
-                scan.angle_increment = (atof(argv[4]) - atof(argv[3])) / num_readings;
-                scan.time_increment = (1 / laser_frequency) / (num_readings);
-                scan.range_min = atof(argv[5]);
-                scan.range_max = atof(argv[6]);
-                scan.ranges.resize(num_readings);
-                scan.intensities.resize(num_readings);
-                for(unsigned int i = 0; i < num_readings; ++i) {
-                        scan.ranges[i] = distance;
-                }
-                scan_pub.publish(scan);
-                r.sleep();
-        }
+        std::string topicname(argv[7]);
+        Scan(atof(argv[1]),atof(argv[2]),atof(argv[3]),atof(argv[4]),atof(argv[5]),atof(argv[6]),topicname);
 }

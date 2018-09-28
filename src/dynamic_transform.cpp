@@ -16,10 +16,45 @@
  */
 
 
-
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
 
+class Dynamic_Transform {
+public:
+Dynamic_Transform(double init_x,double init_y,double init_z,double init_yaw,double x_incremental,double y_incremental,double yaw_incremental);
+private:
+ros::NodeHandle n;
+tf::TransformBroadcaster br;
+tf::Transform transform;
+double x_p;
+double y_p;
+double z_p;
+double yaw_p;
+double dx;
+double dy;
+double dyaw;
+};
+/**
+ * [Dynamic_Transform::Dynamic_Transform constructor Dynamically broadcast frame from robot to world by
+ * adding the x_incremental, y_incremental, yaw_incremental values]
+
+ */
+Dynamic_Transform::Dynamic_Transform(double init_x,double init_y,double init_z,double init_yaw,double x_incremental,double y_incremental,double yaw_incremental) :
+        x_p(init_x),y_p(init_y),z_p(init_z),yaw_p(init_yaw),dx(x_incremental),dy(y_incremental),dyaw(yaw_incremental){
+
+        while (n.ok()) {
+                transform.setOrigin( tf::Vector3(x_p, y_p, z_p) );
+                tf::Quaternion q;
+                q.setRPY(0, 0, yaw_p);
+                transform.setRotation(q);
+                br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "robot"));
+                x_p += dx;
+                y_p += dy;
+                yaw_p += dyaw;
+                ros::spinOnce();
+                ros::Duration(0.1).sleep();
+        }
+}
 
 int main(int argc, char** argv){
         ros::init(argc, argv, "dynamic_tf_broadcaster");
@@ -29,10 +64,6 @@ int main(int argc, char** argv){
                 return 1;
         }
 
-        ros::NodeHandle node;
-        tf::TransformBroadcaster br;
-        tf::Transform transform;
-        ros::Rate rate(10.0);
         // Read the initial translation [x_p, y_p,z_p] and roation [0,0,yaw] from argument
         double x_p = atof(argv[1]);
         double y_p = atof(argv[2]);
@@ -51,17 +82,6 @@ int main(int argc, char** argv){
                 ROS_INFO_STREAM("Can't get parameters");
                 dx = 0.0; dy = 0.0; dyaw = 0.0;
         }
-        // Dynamically broadcast the transformation between /world frame and /robot frame by incremnt x, y and yaw for a certain value in a defined rate
-        while (node.ok()) {
-                transform.setOrigin( tf::Vector3(x_p, y_p, z_p) );
-                tf::Quaternion q;
-                q.setRPY(0, 0, yaw_p);
-                transform.setRotation(q);
-                br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "robot"));
-                x_p += dx;
-                y_p += dy;
-                yaw_p += dyaw;
-                rate.sleep();
-        }
+        Dynamic_Transform dynamic_transform(x_p,y_p,z_p,yaw_p,dx,dy,dyaw);
         return 0;
 };

@@ -20,7 +20,6 @@
 
   <!-- Play rosbag data which constains /LaserScan from other resources -->
   <node pkg="rosbag" name="bagplay" type="play" args="--clock $(arg bagfile)" />
-
 <group  unless="$(arg bagMode)">
 <!-- arguments: num_readings, distance, angle_min, angle_max,range_min,range_max, topicName -->
 <arg name="LIDAR_parameters" default="100 1.0 -3.14 3.14 0 6.2 fake_scan" />
