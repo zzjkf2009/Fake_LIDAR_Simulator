@@ -13,7 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   tf
 )
-find_package(rostest REQUIRED)
+
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -123,10 +123,19 @@ include_directories(
 )
 
 ## Declare a C++ library
-#add_library(${PROJECT_NAME}
-#   src/fake_scanner.cpp
-#)
+add_library(fake_scanner_lib
+   src/fake_scanner.cpp
+)
+target_link_libraries(fake_scanner_lib
+  ${catkin_LIBRARIES}
+)
 
+add_library(dynamic_transform_lib
+   src/dynamic_transform.cpp
+)
+target_link_libraries(dynamic_transform_lib
+  ${catkin_LIBRARIES}
+)
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -200,11 +209,18 @@ target_link_libraries(fake_scanner
 #############
 
 ## Add gtest based cpp test target and link libraries
-catkin_add_gtest(dynamic_transform_test test/dynamic_transform_test.cpp)
- target_link_libraries(dynamic_transform_test ${catkin_LIBRARIES})
-catkin_add_gtest(fake_scanner_test test/fake_scanner_test.cpp)
- target_link_libraries(fake_scanner_test ${catkin_LIBRARIES})
 
+if(CATKIN_ENABLE_TESTING)
+find_package(rostest REQUIRED)
+
+catkin_add_gtest(dynamic_transform_test test/dynamic_transform_test.cpp )
+target_link_libraries(dynamic_transform_test ${catkin_LIBRARIES} dynamic_transform_lib)
+
+
+catkin_add_gtest(fake_scanner_test test/fake_scanner_test.cpp )
+target_link_libraries(fake_scanner_test ${catkin_LIBRARIES} fake_scanner_lib)
+
+endif()
 # if(TARGET ${PROJECT_NAME}-test)
 #  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

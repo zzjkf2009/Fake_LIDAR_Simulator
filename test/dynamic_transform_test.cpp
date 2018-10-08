@@ -10,11 +10,8 @@
  * terms of the BSD license.
  */
  #include <gtest/gtest.h>
- #include "../include/fake_scanner/dynamic_transform.h"
-/*
-   struct dynamicTest : public ::testing::Test {
-        Dynamic_Transform dynamic_transform(0.1,0.2,0.3,0.4,0.01,0.02,0.03);
-   };*/
+ #include "dynamic_transform.h"
+
 // Declare a test
 TEST(dynamicTest, ConstructorTest)
 {
@@ -26,6 +23,6 @@ TEST(dynamicTest, ConstructorTest)
 // Run all the tests that were declared with TEST()
 int main(int argc, char **argv){
         testing::InitGoogleTest(&argc, argv);
-        ros::init(argc, argv, "dynamic_transform_tester");
+        ros::init(argc, argv, "dynamic_transform_test");
         return RUN_ALL_TESTS();
 }

@@ -6,6 +6,11 @@ This is the package that simulates the LIDAR data by publishing [laserScan](http
 
 
 ## Build and Run
+Build
+```
+catkin_make
+```
+
 - Run the simulation via launch file
 ```
 roslaunch fake_scanner lidar_simulator.launch
@@ -22,6 +27,12 @@ rqt_graph
 rosparam list
 rostopic list
 ```
+
+Unit test using gtest
+```
+catkin_make run_tests_fake_scanner_gtest
+```
+- ![gtest](https://github.com/zzjkf2009/Fake_LIDAR_Simulator/blob/devel/image/Unit_test.png)
 ## Structure
 The graph representation:
 - ![rqt](https://github.com/zzjkf2009/Fake_LIDAR_Simulator/blob/devel/image/rqt_graph.png)

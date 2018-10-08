@@ -10,14 +10,11 @@
  * terms of the BSD license.
  */
  #include <gtest/gtest.h>
- #include "../include/fake_scanner/fake_scanner.h"
-/*
-   struct fake_scannerTest : public ::testing::Test {
-        std::string topicName("fake_scan")
-        Scan scan(100, 1.2, -3.14, 3.14, 0, 6.2,topicName);
-   };*/
+ #include "fake_scanner.h"
 
-TEST(fakescannerTest, ConstructorTest)
+
+
+TEST(fake_scannerTest, ConstructorTest)
 {
         std::string topicName("fake_scan");
         Scan scan(100, 1.2, -3.14, 3.14, 0, 6.2,topicName);
@@ -26,7 +23,7 @@ TEST(fakescannerTest, ConstructorTest)
 
 // Run all the tests that were declared with TEST()
 int main(int argc, char **argv){
+        ros::init(argc, argv, "fake_scanner_test");
         testing::InitGoogleTest(&argc, argv);
-        ros::init(argc, argv, "fake_scanner_tester");
         return RUN_ALL_TESTS();
 }
