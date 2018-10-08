@@ -6,11 +6,6 @@ This is the package that simulates the LIDAR data by publishing [laserScan](http
 
 
 ## Build and Run
-Build
-```
-catkin_make
-```
-
 - Run the simulation via launch file
 ```
 roslaunch fake_scanner lidar_simulator.launch
