@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(fake_scanner)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   tf
 )
+
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -117,15 +118,24 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include/fake_scanner
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/fake_scanner.cpp
-# )
+add_library(fake_scanner_lib
+   src/fake_scanner.cpp
+)
+target_link_libraries(fake_scanner_lib
+  ${catkin_LIBRARIES}
+)
 
+add_library(dynamic_transform_lib
+   src/dynamic_transform.cpp
+)
+target_link_libraries(dynamic_transform_lib
+  ${catkin_LIBRARIES}
+)
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -134,9 +144,9 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-
- add_executable(fake_scanner src/fake_scanner_squareroom.cpp)
-# add_executable(dynamic_transform src/dynamic_transform.cpp)
+ add_executable(fake_scanner src/fake_scanner.cpp)
+ add_executable(fake_scanner_external src/fake_scanner_external.cpp)
+ add_executable(dynamic_transform src/dynamic_transform.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -147,15 +157,18 @@ include_directories(
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 
-add_dependencies(fake_scanner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(fake_scanner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-
- target_link_libraries(fake_scanner
-#   dynamic_transform
+target_link_libraries(fake_scanner
+  ${catkin_LIBRARIES}
+)
+ target_link_libraries(fake_scanner_external
    ${catkin_LIBRARIES}
  )
-
+ target_link_libraries(dynamic_transform
+   ${catkin_LIBRARIES}
+ )
 #############
 ## Install ##
 #############
@@ -196,9 +209,20 @@ add_dependencies(fake_scanner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPOR
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_fake_scanner.cpp)
+
+if(CATKIN_ENABLE_TESTING)
+find_package(rostest REQUIRED)
+
+catkin_add_gtest(dynamic_transform_test test/dynamic_transform_test.cpp )
+target_link_libraries(dynamic_transform_test ${catkin_LIBRARIES} dynamic_transform_lib)
+
+
+catkin_add_gtest(fake_scanner_test test/fake_scanner_test.cpp )
+target_link_libraries(fake_scanner_test ${catkin_LIBRARIES} fake_scanner_lib)
+
+endif()
 # if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+#  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
 ## Add folders to be run by python nosetests

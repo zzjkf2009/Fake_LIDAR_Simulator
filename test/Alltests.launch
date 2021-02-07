@@ -1,0 +1,4 @@
+<launch>
+  <test pkg="fake_scanner" test-name="dynamic_transform_test" type="dynamic_transform_test"/>
+  <test pkg="fake_scanner" test-name="fake_scanner_test" type="fake_scanner_test"/>
+</launch>
